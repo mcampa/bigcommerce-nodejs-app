@@ -16,8 +16,7 @@ Create `config.json` file, with your bigcommerce credentials:
 {
   "server": {
     "host": "localhost",
-    "port": 3333,
-    "cluster": false
+    "port": 3333
   },
   "bigcommerce": {
     "clientId": "m7yqgsk39i6agn4pfscmglt2s9lmlrc",
@@ -33,4 +32,3 @@ Run the app:
 ```
 node server/index.js
 ```
-

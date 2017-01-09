@@ -1,36 +1,26 @@
-var Confidence = require('confidence'),
-    config = require('../config.json'),
-    criteria = {
-        env: process.env.NODE_ENV
-    },
-    store,
-    manifest;
+const Confidence = require('confidence');
+const config = require('../config.json');
+const criteria = {
+    env: process.env.NODE_ENV,
+};
 
-manifest = {
+const manifest = {
     server: {
         load: {
-            sampleInterval: 5000
-        }
+            sampleInterval: 5000,
+        },
     },
     connections: [{
         host: config.server.host,
         port: config.server.port,
-        options: config.server.options
+        options: config.server.options,
     }],
     plugins: {
-        // Local Plugins
-        './plugins/App': config.bigcommerce
-    }
+        './plugins/App': config.bigcommerce,
+    },
 };
 
-store = new Confidence.Store(manifest);
+const store = new Confidence.Store(manifest);
 
-exports.get = function(key) {
-
-    return store.get(key, criteria);
-};
-
-exports.meta = function(key) {
-
-    return store.meta(key, criteria);
-};
+exports.get = (key) => store.get(key, criteria);
+exports.meta = (key) => store.meta(key, criteria);
