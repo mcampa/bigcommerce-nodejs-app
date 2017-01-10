@@ -18,6 +18,11 @@ Create `config.json` file, with your bigcommerce credentials:
     "host": "localhost",
     "port": 3333
   },
+  "yar": {
+    "cookieOptions": {
+      "password": "a long password"
+    }
+  },
   "bigcommerce": {
     "clientId": "m7yqgsk39i6agn4pfscmglt2s9lmlrc",
     "clientSecret": "5vbrqco0vx2xf5eig402zhremio66kq",

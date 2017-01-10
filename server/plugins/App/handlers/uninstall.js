@@ -9,6 +9,8 @@ module.exports = (bigcommerce) => {
         // TODO: remove user from database
         // deleteUserData(account.user.id)
 
+        request.yar.reset();
+
         return reply({ status: 'OK' });
     };
 }
