@@ -18,14 +18,24 @@ Create `config.json` file, with your bigcommerce credentials:
     "host": "localhost",
     "port": 3333
   },
-  "bigcommerce": {
-    "clientId": "m7yqgsk39i6agn4pfscmglt2s9lmlrc",
-    "clientSecret": "5vbrqco0vx2xf5eig402zhremio66kq",
-    "callbackUrl": "https://e4a32fdc.ngrok.io/app/auth",
+  "yar": {
+    "cookieOptions": {
+      "password": "<a strong password for encoding cookies>"
+    }
+  },
+  "app": {
+    "bcClientId": "<bc app client id>",
+    "bcClientSecret": "<bc app client secret>",
     "bcAuthUrl": "https://login.bigcommerce.com/oauth2/token",
-    "bcApiUrl": "https://api.bigcommerce.com/"
+    "bcApiUrl": "https://api.bigcommerce.com/",
+    "appUrl": "https://myappurl.example.com",
+    "authUri": "/app/auth",
+    "loadUri": "/app/load",
+    "uninstallUri": "/app/uninstall",
+    "webhookUri": "/app/webhook"
   }
 }
+
 ```
 
 Run the app:

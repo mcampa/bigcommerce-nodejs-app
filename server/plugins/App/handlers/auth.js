@@ -1,3 +1,5 @@
+const async = require('async');
+
 module.exports = (bigcommerce) => {
     return (request, reply) => {
         const query = request.query || {};
@@ -17,10 +19,41 @@ module.exports = (bigcommerce) => {
             }
 
             // TODO: Should save this to a database
-            // saveUserData(account.user.id, account.access_token)
-            // const client = bigcommerce.api(account, account.access_token)
+            saveUserToken(account.user.id, account.access_token, (err) => {
+                console.log(`Authorized user ${account.user.id} token ${account.access_token}`);
+                if (err) {
+                    throw err;
+                }
 
-            return reply.view('app', { user: account.user });
+                const client = bigcommerce.client(account, account.access_token);
+
+                subscribeWebHooks(client, (err) => {
+                    if (err) {
+                        throw err;
+                    }
+
+                    return reply.view('app', { user: account.user });
+                });
+            });
+
         });
     };
+
+    function subscribeWebHooks(client, callback) {
+        const scopes = [
+            'store/order/*',
+            'store/product/*',
+            'store/customer/*',
+        ];
+
+        async.each(scopes, (scope, next) => {
+            console.log(`hooking ${scope} to user ${client.account.user.id}`);
+            client.setHook(scope, next);
+        }, callback);
+    }
+}
+
+function saveUserToken(userId, token, callback) {
+    // TODO: Save access_token to database
+    callback();
 }

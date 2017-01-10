@@ -17,15 +17,15 @@ const manifest = {
     ],
     registrations: [
         {
-            plugin: { register: 'vision' }
+            plugin: { register: 'vision' },
         },
         {
-            plugin: {
-                register: './plugins/App',
-                options: config.bigcommerce,
-            }
+            plugin: { register: 'yar', options: config.yar },
         },
-    ]
+        {
+            plugin: { register: './plugins/App', options: config.app },
+        },
+    ],
 };
 
 glue.compose(manifest, {relativeTo: __dirname}, (err, server) => {
