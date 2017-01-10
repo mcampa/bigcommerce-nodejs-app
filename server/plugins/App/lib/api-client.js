@@ -13,7 +13,7 @@ function authorize(data, callback) {
         context: data.context,
     };
 
-    needle.post(this.config.bcAuthUrl, payload, (err, response) => {
+    needle.post(this.config.authUrl, payload, (err, response) => {
         if (err) {
             return callback(err);
         }
@@ -28,9 +28,9 @@ function authorize(data, callback) {
     });
 }
 
-function api(account, accessToken) {
-    const api = {};
-    const getUrl = (uri) => this.config.bcApiUrl + path.join(account.context, 'v2', uri);
+function client(account, accessToken) {
+    const client = { account, accessToken };
+    const getUrl = (uri) => this.config.apiUrl + path.join(account.context, 'v2', uri);
     const headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -38,7 +38,7 @@ function api(account, accessToken) {
         'X-Auth-Token': accessToken
     };
 
-    api.get = (uri, params, callback) => {
+    client.get = (uri, params, callback) => {
         if (typeof params === 'function') {
             callback = params;
             params = {};
@@ -57,7 +57,7 @@ function api(account, accessToken) {
         });
     };
 
-    api.post = (uri, data, params, callback) => {
+    client.post = (uri, data, params, callback) => {
         if (typeof params === 'function') {
             callback = params;
             params = {};
@@ -76,15 +76,22 @@ function api(account, accessToken) {
         });
     };
 
-    api.setHook = (hook, callback) => {
-        api.post('hooks', hook, callback);
+    client.setHook = (scope, callback) => {
+        const hook = {
+            "scope": scope,
+            "destination": `${this.config.webhookUrl}/${account.user.id}`
+        };
+
+        console.log(`hooking to ${hook.destination}`);
+
+        client.post('hooks', hook, callback);
     };
 
-    api.getOrders = (callback) => {
-        api.get('orders', callback);
+    client.getOrders = (callback) => {
+        client.get('orders', callback);
     };
 
-    return api;
+    return client;
 }
 
 
@@ -116,7 +123,7 @@ function decode(query) {
 module.exports = (config) => {
     return {
         authorize: authorize.bind({ config }),
-        api: api.bind({ config }),
+        client: client.bind({ config }),
         decode: decode.bind({ config }),
     };
 };

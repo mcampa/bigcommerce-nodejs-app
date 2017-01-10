@@ -7,6 +7,7 @@
     "lint": "./node_modules/eslint/bin/eslint.js server"
   },
   "dependencies": {
+    "async": "^2.1.4",
     "glue": "^4.1.0",
     "handlebars": "^4.0.6",
     "hapi": "^16.1.0",

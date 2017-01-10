@@ -23,7 +23,7 @@ const manifest = {
             plugin: { register: 'yar', options: config.yar },
         },
         {
-            plugin: { register: './plugins/App', options: config.bigcommerce },
+            plugin: { register: './plugins/App', options: config.app },
         },
     ],
 };
