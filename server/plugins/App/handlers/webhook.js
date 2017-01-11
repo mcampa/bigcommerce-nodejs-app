@@ -1,8 +1,15 @@
-module.exports = (bigcommerce) => {
+module.exports = (app) => {
     return (request, reply) => {
+        const userId = request.params.userId;
         // Webhook Received
-        console.log(request.params, request.payload);
+        console.log(userId, request.payload);
 
-        reply({ status: 'OK' });
+        if (!userId) {
+            return reply({ status: 'no user id' }).code(400);
+        }
+
+        app.getUserClient(userId, (err, client) => {
+            reply({ status: 'OK' });
+        });
     };
 };
