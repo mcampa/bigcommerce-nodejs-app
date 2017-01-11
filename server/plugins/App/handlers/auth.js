@@ -1,6 +1,6 @@
 const async = require('async');
 
-module.exports = (bigcommerce) => {
+module.exports = (app) => {
     return (request, reply) => {
         const query = request.query || {};
         const payload = {
@@ -13,19 +13,17 @@ module.exports = (bigcommerce) => {
             return reply('Invalid code').code(400);
         }
 
-        bigcommerce.authorize(payload, (err, account) => {
+        app.api.authorize(payload, (err, account) => {
             if (err) {
                 throw err;
             }
 
-            // TODO: Should save this to a database
-            saveUserToken(account.user.id, account.access_token, (err) => {
-                console.log(`Authorized user ${account.user.id} token ${account.access_token}`);
+            app.saveUser(account.user.id, account.context, account.access_token, (err) => {
                 if (err) {
                     throw err;
                 }
 
-                const client = bigcommerce.client(account, account.access_token);
+                const client = app.api.client(account, account.access_token);
 
                 subscribeWebHooks(client, (err) => {
                     if (err) {
@@ -47,13 +45,8 @@ module.exports = (bigcommerce) => {
         ];
 
         async.each(scopes, (scope, next) => {
-            console.log(`hooking ${scope} to user ${client.account.user.id}`);
+            console.log(`hooking ${scope} to user ${client.userId}`);
             client.setHook(scope, next);
         }, callback);
     }
-}
-
-function saveUserToken(userId, token, callback) {
-    // TODO: Save access_token to database
-    callback();
 }

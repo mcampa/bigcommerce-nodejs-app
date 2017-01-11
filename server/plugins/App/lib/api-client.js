@@ -28,14 +28,14 @@ function authorize(data, callback) {
     });
 }
 
-function client(account, accessToken) {
-    const client = { account, accessToken };
-    const getUrl = (uri) => this.config.apiUrl + path.join(account.context, 'v2', uri);
+function client(userId, context, token) {
+    const client = { userId, token };
+    const getUrl = (uri) => this.config.apiUrl + path.join(context, 'v2', uri);
     const headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'X-Auth-Client': this.config.clientId,
-        'X-Auth-Token': accessToken
+        'X-Auth-Token': token
     };
 
     client.get = (uri, params, callback) => {
@@ -79,7 +79,7 @@ function client(account, accessToken) {
     client.setHook = (scope, callback) => {
         const hook = {
             "scope": scope,
-            "destination": `${this.config.webhookUrl}/${account.user.id}`
+            "destination": `${this.config.webhookUrl}/${userId}`
         };
 
         console.log(`hooking to ${hook.destination}`);

@@ -5,15 +5,40 @@ const handleLoad = require('./handlers/load');
 const handleUninstall = require('./handlers/uninstall');
 const handleWebhook = require('./handlers/webhook');
 
+
 exports.register = (server, options, next) => {
-    const bigcommerce = apiClient({
-        clientId: options.bcClientId,
-        clientSecret: options.bcClientSecret,
-        authUrl: options.bcAuthUrl,
-        apiUrl: options.bcApiUrl,
-        callbackUrl: `${options.appUrl}${options.authUri}`,
-        webhookUrl: `${options.appUrl}${options.webhookUri}`,
-    });
+    const app = {
+        api: apiClient({
+            clientId: options.bcClientId,
+            clientSecret: options.bcClientSecret,
+            authUrl: options.bcAuthUrl,
+            apiUrl: options.bcApiUrl,
+            callbackUrl: `${options.appUrl}${options.authUri}`,
+            webhookUrl: `${options.appUrl}${options.webhookUri}`,
+        }),
+
+        getUserClient(userId, callback) {
+            // TODO: Load access_token from database
+            const token = 'xxx';
+            const context = 'xxx';
+            const client = this.api.client(userId, context, token);
+
+            callback(null, client);
+        },
+
+        saveUser(userId, context, token, callback) {
+            console.log(`Authorized user ${userId} ${context} token ${token}`);
+            // TODO: Save access_token to database
+            callback();
+        },
+
+        deleteUser(userId, callback) {
+            console.log(`Deleting user ${userId}`);
+            // TODO: Delete user from db
+            callback();
+        },
+
+    };
 
     // Register the templates
     server.views({
@@ -31,25 +56,25 @@ exports.register = (server, options, next) => {
     server.route({
         method: 'GET',
         path: options.authUri,
-        handler: handleAuth(bigcommerce),
+        handler: handleAuth(app),
     });
 
     server.route({
         method: 'GET',
         path: options.loadUri,
-        handler: handleLoad(bigcommerce),
+        handler: handleLoad(app),
     });
 
     server.route({
         method: 'GET',
         path: options.uninstallUri,
-        handler: handleUninstall(bigcommerce),
+        handler: handleUninstall(app),
     });
 
     server.route({
         method: 'POST',
         path: `${options.webhookUri}/{userId}`,
-        handler: handleWebhook(bigcommerce),
+        handler: handleWebhook(app),
     });
 
     next();
