@@ -35,7 +35,7 @@ function client(userId, context, token) {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'X-Auth-Client': this.config.clientId,
-        'X-Auth-Token': token
+        'X-Auth-Token': token,
     };
 
     client.get = (uri, params, callback) => {
@@ -79,7 +79,7 @@ function client(userId, context, token) {
     client.setHook = (scope, callback) => {
         const hook = {
             "scope": scope,
-            "destination": `${this.config.webhookUrl}/${userId}`
+            "destination": `${this.config.webhookUrl}/${client.userId}`
         };
 
         console.log(`hooking to ${hook.destination}`);

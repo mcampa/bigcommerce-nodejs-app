@@ -9,11 +9,11 @@
     }
   },
   "app": {
-    "bcClientId": "<bc app client id>",
-    "bcClientSecret": "<bc app client secret>",
+    "bcClientId": "",
+    "bcClientSecret": "",
     "bcAuthUrl": "https://login.bigcommerce.com/oauth2/token",
     "bcApiUrl": "https://api.bigcommerce.com/",
-    "appUrl": "https://myappurl.example.com",
+    "appUrl": "https://f6d1d0cd.ngrok.io",
     "authUri": "/app/auth",
     "loadUri": "/app/load",
     "uninstallUri": "/app/uninstall",

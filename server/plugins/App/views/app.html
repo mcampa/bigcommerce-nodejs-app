@@ -3,6 +3,7 @@
 <head>
     <title>My App</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -11,6 +12,16 @@
         <div class="well">
             Welcome <b>{{user.email}}</b>
         </div>
+
+        <pre id="products"></pre>
     </div>
+    <script>
+        $(document).ready(function () {
+            $.get('/api/products', function(data) {
+                console.log(data);
+                $('#products').html(data);
+            });
+        });
+    </script>
 </body>
 </html>

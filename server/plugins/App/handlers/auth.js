@@ -23,7 +23,7 @@ module.exports = (app) => {
                     throw err;
                 }
 
-                const client = app.api.client(account, account.access_token);
+                const client = app.api.client(account.user.id, account.context, account.access_token);
 
                 subscribeWebHooks(client, (err) => {
                     if (err) {
@@ -45,7 +45,7 @@ module.exports = (app) => {
         ];
 
         async.each(scopes, (scope, next) => {
-            console.log(`hooking ${scope} to user ${client.userId}`);
+            console.log(`hooking ${scope} to account ${client.userId}`);
             client.setHook(scope, next);
         }, callback);
     }

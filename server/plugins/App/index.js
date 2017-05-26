@@ -4,7 +4,7 @@ const handleAuth = require('./handlers/auth');
 const handleLoad = require('./handlers/load');
 const handleUninstall = require('./handlers/uninstall');
 const handleWebhook = require('./handlers/webhook');
-
+const memDb = {};
 
 exports.register = (server, options, next) => {
     const app = {
@@ -18,9 +18,11 @@ exports.register = (server, options, next) => {
         }),
 
         getUserClient(userId, callback) {
-            // TODO: Load access_token from database
-            const token = 'xxx';
-            const context = 'xxx';
+            // TODO: Load access_token from a real database
+
+            console.log(`loading from memDb[${userId}]`, memDb[userId]);
+            const token = memDb[userId].token;
+            const context = memDb[userId].context;
             const client = this.api.client(userId, context, token);
 
             callback(null, client);
@@ -28,13 +30,17 @@ exports.register = (server, options, next) => {
 
         saveUser(userId, context, token, callback) {
             console.log(`Authorized user ${userId} ${context} token ${token}`);
-            // TODO: Save access_token to database
+            // TODO: Save access_token to a real database
+            memDb[userId] = {userId, context, token};
+
+            console.log(`save to memDb[${userId}]`, memDb[userId]);
             callback();
         },
 
         deleteUser(userId, callback) {
             console.log(`Deleting user ${userId}`);
             // TODO: Delete user from db
+            delete memDb[userId];
             callback();
         },
 
@@ -49,7 +55,11 @@ exports.register = (server, options, next) => {
     });
 
     server.ext('onPreHandler', (request, reply) => {
-        console.log(request.method.toUpperCase(), request.path);
+        console.log(
+            request.method.toUpperCase(),
+            request.path,
+            request.headers['x-forwarded-for']
+        );
         reply.continue();
     });
 
@@ -69,6 +79,21 @@ exports.register = (server, options, next) => {
         method: 'GET',
         path: options.uninstallUri,
         handler: handleUninstall(app),
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/products',
+        handler: (request, reply) => {
+            const userId = request.yar.get('userId');
+            if (!userId) {
+                return reply({}).code(401);
+            }
+
+            app.getUserClient(userId, (err, client) => {
+                client.getOrders((err, data) => reply({err, data}));
+            });
+        },
     });
 
     server.route({

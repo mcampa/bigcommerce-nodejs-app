@@ -7,10 +7,7 @@ module.exports = (app) => {
         }
 
         app.getUserClient(account.user.id, (err, client) => {
-            request.yar.set('token', client.token);
-
-            // client.getOrders((err, data) => console.log(err, data));
-
+            request.yar.set('userId', account.user.id);
             return reply.view('app', { user: account.user });
         });
     };
